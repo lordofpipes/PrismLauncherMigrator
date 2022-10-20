@@ -76,20 +76,6 @@ namespace PrismLauncherMigrator
             }
         }
 
-        private string GetArchitecture()
-        {
-            string architecture = System.Environment.GetEnvironmentVariable("PROCESSOR_ARCHITECTURE");
-
-            var architectureNames = new Dictionary<string, string>()
-            {
-                { "x86", "x86" },
-                { "x64", "x64" },
-                { "amd64", "x64" },
-                { "arm64", "aarch64" },
-            };
-            return architectureNames[architecture.ToLower()];
-        }
-
         private async Task GetMicrosoftOpenJDK(string version, string installerPath)
         {
             HttpClient client = new HttpClient();
@@ -97,15 +83,7 @@ namespace PrismLauncherMigrator
             client.DefaultRequestHeaders.Add("Accept", "application/json, application/octet-stream");
             client.DefaultRequestHeaders.Add("User-Agent", "PrismLauncher Migration Tool");
 
-            string architecture = GetArchitecture();
-
-            // fallback to adoptium on x86
-            if (architecture.Equals("x86"))
-            {
-                await GetAdoptium(version, installerPath);
-                return;
-            }
-            string url = $"https://aka.ms/download-jdk/microsoft-jdk-{version}-windows-{architecture}.msi";
+            string url = $"https://aka.ms/download-jdk/microsoft-jdk-{version}-windows-x64.msi";
 
             HttpResponseMessage exeResponse = await client.GetAsync(url);
             using (var fs = new FileStream(installerPath, FileMode.OpenOrCreate))
@@ -118,9 +96,7 @@ namespace PrismLauncherMigrator
         {
             LabelStatus.Content = $"Obtaining Adoptium OpenJDK download link...";
 
-            string architecture = GetArchitecture();
-
-            string url = $"https://api.adoptium.net/v3/assets/latest/{version}/hotspot?architecture={architecture}&image_type=jdk&os=windows";
+            string url = $"https://api.adoptium.net/v3/assets/latest/{version}/hotspot?architecture=x64&image_type=jdk&os=windows";
 
             HttpClient client = new HttpClient();
 
