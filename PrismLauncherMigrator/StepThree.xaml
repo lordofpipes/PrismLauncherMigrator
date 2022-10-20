@@ -1,0 +1,16 @@
+<Window x:Class="PrismLauncherMigrator.StepThree"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="Prism Launcher Migrator by lordpipe" Height="230" Width="500">
+    <StackPanel Margin="10">
+        <Label FontSize="16">Success!</Label>
+        <Label>You can run this tool again to update PrismLauncher.</Label>
+        <Label x:Name="LabelStatus">You can use the buttons below to update Java.</Label>
+        <Button x:Name="ButtonInstallJava17" Click="ButtonInstallJava17_Click">Optional: Install Java 17 (Microsoft OpenJDK)</Button>
+        <Button x:Name="ButtonInstallJava8" Click="ButtonInstallJava8_Click">Optional: Install Java 8 (Adoptium Temurin)</Button>
+        <Button x:Name="ButtonInstallJava19" Click="ButtonInstallJava19_Click">Optional: Install Java 19 (Adoptium Temurin) [Not recommended for Minecraft]</Button>
+    </StackPanel>
+</Window>
