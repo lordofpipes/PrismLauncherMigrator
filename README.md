@@ -3,7 +3,10 @@ Prism Launcher Easy Migration Tool
 
 This tool makes it easy to switch from PolyMC and MultiMC to PrismLauncher, and install multiple Java versions. It will automatically download the latest version, so it is always up to date.
 
-Downloads: https://github.com/lordofpipes/PrismLauncherMigrator/releases
+**Downloads:** https://github.com/lordofpipes/PrismLauncherMigrator/releases
+
+- ⚠️ **Requires [.NET Framework Runtime 6.0](https://dotnet.microsoft.com/en-us/download) or above**
+- ⚠️ **Requires Windows 7 x86-64 or above**
 
 ![](screenshots/1.png)
 ![](screenshots/2.png)
@@ -22,5 +25,5 @@ This program is free software: you can redistribute it and/or modify it under th
 
 This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License along with this program.  If not, see \<https://www.gnu.org/licenses/\>.
+You should have received a copy of the GNU General Public License along with this program.  If not, see https://www.gnu.org/licenses/
 
