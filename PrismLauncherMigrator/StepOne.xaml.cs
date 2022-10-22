@@ -9,7 +9,7 @@ namespace PrismLauncherMigrator
 {
     public partial class StepOne : Window
     {
-        string ExistingPrismFolder = null;
+        string? ExistingPrismFolder;
 
         public StepOne()
         {
@@ -17,12 +17,12 @@ namespace PrismLauncherMigrator
             PrepareLists();
         }
 
-        private async Task PrepareLists()
+        private async void PrepareLists()
         {
-            List<string> dataFolders = new List<string>();
-            List<string> installations = new List<string>();
+            var dataFolders = new List<string>();
+            var installations = new List<string>();
 
-            List<string> folders = new List<string>();
+            var folders = new List<string>();
 
             await Task.Run(() =>
             {
@@ -85,7 +85,7 @@ namespace PrismLauncherMigrator
                 return;
             }
 
-            foreach (System.IO.DirectoryInfo dirInfo in subDirs)
+            foreach (var dirInfo in subDirs)
             {
                 string[] knownFolders = { "PolyMC", "ManyMC", "MultiMC", "PrismLauncher" };
                 if (knownFolders.Any(s => dirInfo.Name.Equals(s)))
@@ -99,8 +99,8 @@ namespace PrismLauncherMigrator
 
         private void ListDataFolders_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            string selection = ListDataFolders.Items[ListDataFolders.SelectedIndex].ToString();
-            if (!selection.Equals("[ Do not migrate anything ]") && ExistingPrismFolder != null)
+            var selection = ListDataFolders.Items[ListDataFolders.SelectedIndex].ToString();
+            if (!selection!.Equals("[ Do not migrate anything ]") && ExistingPrismFolder != null)
             {
                 LabelStatus.Content = $"Warning: Will backup existing Prism data folder\n{ExistingPrismFolder}\nto\n{ExistingPrismFolder}.{App.Timestamp}.bak";
             }
@@ -112,11 +112,11 @@ namespace PrismLauncherMigrator
 
         private void ButtonMigrate_Click(object sender, RoutedEventArgs e)
         {
-            string dataFolder = ListDataFolders.Items[ListDataFolders.SelectedIndex].ToString();
-            if (dataFolder.Equals("[ Do not migrate anything ]")) dataFolder = null;
-            string[] installations = ListInstallations.SelectedItems.Cast<string>().ToArray();
+            var dataFolder = ListDataFolders.Items[ListDataFolders.SelectedIndex].ToString();
+            if (dataFolder!.Equals("[ Do not migrate anything ]")) dataFolder = null;
+            var installations = ListInstallations.SelectedItems.Cast<string>().ToArray();
 
-            StepTwo stepTwo = new StepTwo(installations, dataFolder);
+            var stepTwo = new StepTwo(installations, dataFolder!);
             Close();
             stepTwo.Show();
         }

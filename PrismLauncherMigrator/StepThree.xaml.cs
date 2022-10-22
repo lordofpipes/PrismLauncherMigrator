@@ -23,7 +23,7 @@ namespace PrismLauncherMigrator
             LabelStatus.Content = "Downloading Java...";
 
             ((Button)e.Source).IsEnabled = false;
-            string installerPath = Path.GetTempPath() + $"openjdk-8-{App.Timestamp}.msi";
+            var installerPath = Path.GetTempPath() + $"openjdk-8-{App.Timestamp}.msi";
 
             await GetAdoptium("8", installerPath);
             LabelStatus.Content = "Please follow the installation instructions...";
@@ -37,7 +37,7 @@ namespace PrismLauncherMigrator
             LabelStatus.Content = "Downloading Java...";
 
             ((Button)e.Source).IsEnabled = false;
-            string installerPath = Path.GetTempPath() + $"openjdk-19-{App.Timestamp}.msi";
+            var installerPath = Path.GetTempPath() + $"openjdk-19-{App.Timestamp}.msi";
 
             await GetAdoptium("19", installerPath);
             LabelStatus.Content = "Please follow the installation instructions...";
@@ -52,7 +52,7 @@ namespace PrismLauncherMigrator
             LabelStatus.Content = "Downloading Java...";
 
             ((Button)e.Source).IsEnabled = false;
-            string installerPath = Path.GetTempPath() + $"openjdk-17-{App.Timestamp}.msi";
+            var installerPath = Path.GetTempPath() + $"openjdk-17-{App.Timestamp}.msi";
 
             await GetMicrosoftOpenJDK("17", installerPath);
             LabelStatus.Content = "Please follow the installation instructions...";
@@ -62,59 +62,53 @@ namespace PrismLauncherMigrator
             LabelStatus.Content = "Finished installing Java 17.";
         }
 
-        private async Task RunInstaller(string installerPath)
+        private static async Task RunInstaller(string installerPath)
         {
-            using (var process = new Process())
-            {
-                // msi files are weird
-                process.StartInfo.FileName = "msiexec";
-                process.StartInfo.WorkingDirectory = Path.GetDirectoryName(installerPath);
-                process.StartInfo.Arguments = $"/i {Path.GetFileName(installerPath)}";
-                process.Start();
+            using var process = new Process();
+            // msi files are weird
+            process.StartInfo.FileName = "msiexec";
+            process.StartInfo.WorkingDirectory = Path.GetDirectoryName(installerPath);
+            process.StartInfo.Arguments = $"/i {Path.GetFileName(installerPath)}";
+            process.Start();
 
-                await process.WaitForExitAsync();
-            }
+            await process.WaitForExitAsync();
         }
 
-        private async Task GetMicrosoftOpenJDK(string version, string installerPath)
+        private static async Task GetMicrosoftOpenJDK(string version, string installerPath)
         {
-            HttpClient client = new HttpClient();
+            var client = new HttpClient();
 
             client.DefaultRequestHeaders.Add("Accept", "application/json, application/octet-stream");
             client.DefaultRequestHeaders.Add("User-Agent", "PrismLauncher Migration Tool");
 
-            string url = $"https://aka.ms/download-jdk/microsoft-jdk-{version}-windows-x64.msi";
+            var url = $"https://aka.ms/download-jdk/microsoft-jdk-{version}-windows-x64.msi";
 
-            HttpResponseMessage exeResponse = await client.GetAsync(url);
-            using (var fs = new FileStream(installerPath, FileMode.OpenOrCreate))
-            {
-                await exeResponse.Content.CopyToAsync(fs);
-            }
+            var exeResponse = await client.GetAsync(url);
+            using var fs = new FileStream(installerPath, FileMode.OpenOrCreate);
+            await exeResponse.Content.CopyToAsync(fs);
         }
 
         private async Task GetAdoptium(string version, string installerPath)
         {
             LabelStatus.Content = $"Obtaining Adoptium OpenJDK download link...";
 
-            string url = $"https://api.adoptium.net/v3/assets/latest/{version}/hotspot?architecture=x64&image_type=jdk&os=windows";
+            var url = $"https://api.adoptium.net/v3/assets/latest/{version}/hotspot?architecture=x64&image_type=jdk&os=windows";
 
-            HttpClient client = new HttpClient();
+            var client = new HttpClient();
 
             client.DefaultRequestHeaders.Add("Accept", "application/json, application/octet-stream");
             client.DefaultRequestHeaders.Add("User-Agent", "PrismLauncher Migration Tool");
 
-            string response = await client.GetStringAsync(url);
+            var response = await client.GetStringAsync(url);
 
-            JsonNode value = JsonNode.Parse(response);
-            string downloadUrl = (string)value[0]["binary"]["installer"]["link"];
+            var value = JsonNode.Parse(response);
+            var downloadUrl = (string)value![0]!["binary"]!["installer"]!["link"]!;
 
             LabelStatus.Content = $"Downloading {downloadUrl}";
 
-            HttpResponseMessage exeResponse = await client.GetAsync(downloadUrl);
-            using (var fs = new FileStream(installerPath, FileMode.OpenOrCreate))
-            {
-                await exeResponse.Content.CopyToAsync(fs);
-            }
+            var exeResponse = await client.GetAsync(downloadUrl);
+            using var fs = new FileStream(installerPath, FileMode.OpenOrCreate);
+            await exeResponse.Content.CopyToAsync(fs);
         }
     }
 }
