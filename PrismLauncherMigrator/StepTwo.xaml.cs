@@ -58,12 +58,21 @@ namespace PrismLauncherMigrator
 
             var response = await client.GetStringAsync(url);
 
+            var winver = Environment.OSVersion.Version;
+            var isWinBefore10 = Environment.OSVersion.Platform == PlatformID.Win32NT
+                && winver.Major == 6
+                && winver.Minor >= 1
+                && winver.Minor <= 3;
+
             var value = JsonNode.Parse(response);
             var assets = value![0]!["assets"]!.AsArray();
             var asset = assets.First(asset =>
             {
                 var filename = (string)asset!["name"]!;
-                return filename.EndsWith(".exe") && filename.Contains("-Windows-Setup-") && !filename.Contains("Legacy");
+                return filename.EndsWith(".exe")
+                    && filename.Contains("Windows")
+                    && filename.Contains("Setup")
+                    && filename.Contains("Legacy") == isWinBefore10;
             });
 
             var downloadUrl = (string)asset!["browser_download_url"]!;
