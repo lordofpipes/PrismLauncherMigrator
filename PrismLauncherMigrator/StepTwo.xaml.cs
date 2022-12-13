@@ -52,6 +52,7 @@ namespace PrismLauncherMigrator
             var url = "https://api.github.com/repos/PrismLauncher/PrismLauncher/releases";
 
             var client = new HttpClient();
+            client.Timeout = TimeSpan.FromMinutes(10);
 
             client.DefaultRequestHeaders.Add("Accept", "application/vnd.github+json, application/octet-stream");
             client.DefaultRequestHeaders.Add("User-Agent", "PrismLauncher Migration Tool");
@@ -64,6 +65,8 @@ namespace PrismLauncherMigrator
                 && winver.Minor >= 1
                 && winver.Minor <= 3;
 
+            var isArm64 = System.Runtime.InteropServices.RuntimeInformation.ProcessArchitecture == System.Runtime.InteropServices.Architecture.Arm64;
+
             var value = JsonNode.Parse(response);
             var assets = value![0]!["assets"]!.AsArray();
             var asset = assets.First(asset =>
@@ -71,8 +74,10 @@ namespace PrismLauncherMigrator
                 var filename = (string)asset!["name"]!;
                 return filename.EndsWith(".exe")
                     && filename.Contains("Windows")
+                    && !filename.Contains("MinGW")
                     && filename.Contains("Setup")
-                    && filename.Contains("Legacy") == isWinBefore10;
+                    && filename.Contains("Legacy") == isWinBefore10
+                    && filename.Contains("arm64") == isArm64;
             });
 
             var downloadUrl = (string)asset!["browser_download_url"]!;

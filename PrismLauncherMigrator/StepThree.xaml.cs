@@ -77,6 +77,7 @@ namespace PrismLauncherMigrator
         private static async Task GetMicrosoftOpenJDK(string version, string installerPath)
         {
             var client = new HttpClient();
+            client.Timeout = System.TimeSpan.FromMinutes(10);
 
             client.DefaultRequestHeaders.Add("Accept", "application/json, application/octet-stream");
             client.DefaultRequestHeaders.Add("User-Agent", "PrismLauncher Migration Tool");
@@ -95,6 +96,7 @@ namespace PrismLauncherMigrator
             var url = $"https://api.adoptium.net/v3/assets/latest/{version}/hotspot?architecture=x64&image_type=jdk&os=windows";
 
             var client = new HttpClient();
+            client.Timeout = System.TimeSpan.FromMinutes(10);
 
             client.DefaultRequestHeaders.Add("Accept", "application/json, application/octet-stream");
             client.DefaultRequestHeaders.Add("User-Agent", "PrismLauncher Migration Tool");
