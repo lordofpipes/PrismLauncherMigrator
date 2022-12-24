@@ -1,6 +1,8 @@
 Prism Launcher Easy Migration Tool
 ===
 
+**Similar project:** [PrismLauncherUpdater by Hexality](https://github.com/Hexality/PrismLauncherUpdater)
+
 This tool makes it easy to switch from PolyMC and MultiMC to PrismLauncher, and install multiple Java versions. It will automatically download the latest version, so it is always up to date.
 
 This tool has been used by multiple server communities to help people with migration after the 2022 PolyMC drama.
